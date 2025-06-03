@@ -130,17 +130,18 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   const { id } = req.params;
 
-  // Si es admin, puede eliminar; si es usuario normal, no entra porque la ruta se protegerá
   try {
-    const user = await User.findById(id);
-    if (!user) {
+    // Eliminamos directamente con findByIdAndDelete:
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    if (!deletedUser) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    await user.remove();
     return res.json({ message: 'Usuario eliminado correctamente' });
   } catch (error) {
     console.error('Error en deleteUser:', error);
     return res.status(500).json({ message: 'Error en el servidor' });
   }
 };
+
